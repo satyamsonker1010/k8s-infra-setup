@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-server
+  namespace: backend
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: auth-server
+  template:
+    metadata:
+      labels:
+        app: auth-server
+    spec:
+      containers:
+        - name: auth-server
+          image: satyamsonker1010/auth-service-test:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: auth-server-config
+            - secretRef:
+                name: auth-server-secret
+          resources:
+            requests:
+              cpu: "50m" # Kam se kam CPU (0.05 Core) taki zyada pods fit ho sakein
+              memory: "128Mi" # Kam se kam RAM (~134MB) startup ke liye
+            limits:
+              cpu: "1000m" # Max 1 Core use kar sake agar available hai
+              memory: "512Mi" # Max 512MB RAM use kar sake load padne par
+          readinessProbe:
+            httpGet:
+              path: /api/v1/auth/health
+              port: 3000
+            initialDelaySeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/v1/auth/health
+              port: 3000
+            initialDelaySeconds: 15
