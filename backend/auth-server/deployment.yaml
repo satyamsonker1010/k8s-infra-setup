@@ -38,6 +38,13 @@ spec:
               cpu: "1000m"
               memory: "512Mi"
 
+          startupProbe:
+            httpGet:
+              path: /api/v1/auth/health
+              port: 3000
+            failureThreshold: 30
+            periodSeconds: 5
+
           readinessProbe:
             httpGet:
               path: /api/v1/auth/health
