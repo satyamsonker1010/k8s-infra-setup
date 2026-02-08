@@ -37,28 +37,3 @@ spec:
             limits:
               cpu: "1000m"
               memory: "512Mi"
-
-          startupProbe:
-            httpGet:
-              path: /api/v1/auth/health
-              port: 3000
-            failureThreshold: 30
-            periodSeconds: 5
-
-          readinessProbe:
-            httpGet:
-              path: /api/v1/auth/health
-              port: 3000
-            initialDelaySeconds: 20
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
-
-          livenessProbe:
-            httpGet:
-              path: /api/v1/auth/health
-              port: 3000
-            initialDelaySeconds: 40
-            periodSeconds: 15
-            timeoutSeconds: 5
-            failureThreshold: 5
