@@ -23,25 +23,35 @@ spec:
           image: satyamsonker1010/auth-service-test:latest
           ports:
             - containerPort: 3000
+
           envFrom:
             - configMapRef:
                 name: auth-server-config
             - secretRef:
                 name: auth-server-secret
+
           resources:
             requests:
-              cpu: "50m" # Kam se kam CPU (0.05 Core) taki zyada pods fit ho sakein
-              memory: "128Mi" # Kam se kam RAM (~134MB) startup ke liye
+              cpu: "50m"
+              memory: "128Mi"
             limits:
-              cpu: "1000m" # Max 1 Core use kar sake agar available hai
-              memory: "512Mi" # Max 512MB RAM use kar sake load padne par
+              cpu: "1000m"
+              memory: "512Mi"
+
           readinessProbe:
             httpGet:
               path: /api/v1/auth/health
               port: 3000
-            initialDelaySeconds: 5
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
           livenessProbe:
             httpGet:
               path: /api/v1/auth/health
               port: 3000
-            initialDelaySeconds: 15
+            initialDelaySeconds: 40
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 5
